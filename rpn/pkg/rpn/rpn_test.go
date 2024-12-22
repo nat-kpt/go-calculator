@@ -1,7 +1,7 @@
 package rpn_test
 
 import (
-	"github.com/NatalieIsupova/rpn/pkg/rpn"
+	"github.com/nat-kpt/rpn/pkg/rpn"
 	"testing"
 )
 

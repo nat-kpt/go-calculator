@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/NatalieIsupova/rpn/internal/application"
+	"github.com/nat-kpt/rpn/internal/application"
 )
 
 func main() {

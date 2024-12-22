@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/NatalieIsupova/rpn/pkg/rpn"
+	"github.com/nat-kpt/rpn/pkg/rpn"
 )
 
 type Application struct {
