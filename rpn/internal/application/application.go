@@ -2,14 +2,31 @@ package application
 
 import (
 	"bufio"
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
 	"github.com/nat-kpt/rpn/pkg/rpn"
 )
 
+type Config struct {
+	Addr string
+}
+
+func ConfigFromEnv() *Config {
+	config := new(Config)
+	config.Addr = os.Getenv("PORT")
+	if config.Addr == "" {
+		config.Addr = "8080"
+	}
+	return config
+}
+
 type Application struct {
+	config *Config
 }
 
 func New() *Application {
@@ -43,4 +60,30 @@ func (a *Application) Run() error {
 			log.Println(text, "=", result)
 		}
 	}
+}
+
+type Request struct {
+	Expression string `json:"expression"`
+}
+
+func CalcHander(w http.ResponseWriter, r *http.Request) {
+	request := new(Request)
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result, err := rpn.Calc(request.Expression)
+	if err != nil {
+		fmt.Fprintf(w, "err: %s", err.Error())
+	} else {
+		fmt.Fprintf(w, "result: %f", result)
+	}
+}
+
+func (a *Application) RunServer() error {
+	http.HandleFunc("/", CalcHander)
+	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
