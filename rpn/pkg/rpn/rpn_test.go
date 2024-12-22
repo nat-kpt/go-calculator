@@ -13,7 +13,7 @@ func TestCalc(t *testing.T) {
 	}{
 		{
 			name:           "simple",
-			expression:     "1_packets+1_packets",
+			expression:     "1+1",
 			expectedResult: 2,
 		},
 		{
