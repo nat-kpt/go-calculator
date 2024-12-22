@@ -48,7 +48,7 @@ func Calc(expression string) (float64, error) {
 
 	for i := 0; i < len(allInput); i++ {
 		if unicode.IsDigit(allInput[i]) {
-			// TODO не забыть про минус
+			// TODO не забыть про минус и деление на 0
 			polsk_digits = append(polsk_digits, allInput[i])
 		}
 		if allInput[i] == '(' {

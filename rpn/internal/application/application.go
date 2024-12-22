@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -93,7 +94,7 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := rpn.Calc(request.Expression)
-	if err != nil {
+	if err != nil || math.IsInf(result, 2) {
 		// 422 кидаем, когда калькулятор не поддерживает такие выражения
 		// либо передали неправильную json
 		answerErr.Error = "Expression is not valid"
