@@ -73,13 +73,13 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "error: Internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	result, err := rpn.Calc(request.Expression)
 	if err != nil {
-		fmt.Fprintf(w, "err: %s", err.Error())
+		http.Error(w, "error: Internal server error", http.StatusUnprocessableEntity)
 	} else {
 		fmt.Fprintf(w, "result: %f", result)
 	}

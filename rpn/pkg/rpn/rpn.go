@@ -1,7 +1,6 @@
 package rpn
 
 import (
-	"errors"
 	"unicode"
 )
 
@@ -14,7 +13,8 @@ func Bobr(polish []rune) (float64, error) {
 
 		} else {
 			if len(polskDigits) < 2 {
-				return 0, errors.New("Unexpected character, expression is not valid")
+				//  unexpected character
+				return 0, ErrorInvalidExpression
 			}
 			var el float64
 			if polish[i] == '+' {
@@ -36,7 +36,8 @@ func Bobr(polish []rune) (float64, error) {
 	if len(polskDigits) == 1 {
 		return polskDigits[0], nil
 	}
-	return 0, errors.New("Cannot identify numbers more than 9, expression is not valid")
+	// numbers more than 9
+	return 0, ErrorInvalidExpression
 }
 
 func Calc(expression string) (float64, error) {
@@ -56,7 +57,8 @@ func Calc(expression string) (float64, error) {
 		if allInput[i] == ')' {
 			for {
 				if len(operations) == 0 {
-					return 0, errors.New("Extra bracket in expression, expression is not valid")
+					// extra bracket
+					return 0, ErrorInvalidExpression
 				}
 				operations, value = operations[:len(operations)-1], operations[len(operations)-1]
 				if value == '(' {
@@ -75,7 +77,8 @@ func Calc(expression string) (float64, error) {
 		}
 		operations, value = operations[:len(operations)-1], operations[len(operations)-1]
 		if value == '(' {
-			return 0, errors.New("Extra bracket in expression, expression is not valid")
+			// extra bracket
+			return 0, ErrorInvalidExpression
 		}
 		polsk_digits = append(polsk_digits, value)
 	}
