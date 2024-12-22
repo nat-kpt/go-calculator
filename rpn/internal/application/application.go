@@ -30,7 +30,9 @@ type Application struct {
 }
 
 func New() *Application {
-	return &Application{}
+	return &Application{
+		config: ConfigFromEnv(),
+	}
 }
 
 // Функция запуска приложения
@@ -66,7 +68,7 @@ type Request struct {
 	Expression string `json:"expression"`
 }
 
-func CalcHander(w http.ResponseWriter, r *http.Request) {
+func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	request := new(Request)
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -84,6 +86,6 @@ func CalcHander(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) RunServer() error {
-	http.HandleFunc("/", CalcHander)
+	http.HandleFunc("/api/v1/calculate", CalcHandler)
 	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
