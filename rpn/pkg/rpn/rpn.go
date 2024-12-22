@@ -36,7 +36,7 @@ func Bobr(polish []rune) (float64, error) {
 	if len(polskDigits) == 1 {
 		return polskDigits[0], nil
 	}
-	return 0, errors.New("Cannot identify numbers, expression is not valid")
+	return 0, errors.New("Cannot identify numbers more than 9, expression is not valid")
 }
 
 func Calc(expression string) (float64, error) {
