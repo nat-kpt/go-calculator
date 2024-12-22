@@ -3,10 +3,10 @@ package application
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/nat-kpt/rpn/pkg/rpn"
@@ -68,20 +68,45 @@ type Request struct {
 	Expression string `json:"expression"`
 }
 
+type ResponseOK struct {
+	Result string `json:"result"`
+}
+
+type ResponseNotOK struct {
+	Error string `json:"error"`
+}
+var answerOk = ResponseOK{}
+var answerErr = ResponseNotOK{}
+
 func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	request := new(Request)
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		http.Error(w, "error: Internal server error", http.StatusInternalServerError)
+	// ошибку 500 бросаем, когда не пост метод или ничего не передали
+	if err != nil || r.Method != "POST" {
+		answerErr.Error = "Internal server error"
+		responseBytes, _ := json.Marshal(answerErr)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(responseBytes)
+		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
 
 	result, err := rpn.Calc(request.Expression)
 	if err != nil {
-		http.Error(w, "error: Internal server error", http.StatusUnprocessableEntity)
+		// 422 кидаем, когда калькулятор не поддерживает такие выражения
+		// либо передали неправильную json
+		answerErr.Error = "Expression is not valid"
+		responseBytes, _ := json.Marshal(answerErr)
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.Write(responseBytes)
+		http.Error(w, "", http.StatusUnprocessableEntity)
 	} else {
-		fmt.Fprintf(w, "result: %f", result)
+		// 200 когда все ок
+		answerOk.Result = strconv.FormatFloat(result, 'f', 2, 64)
+		responseBytes, _ := json.Marshal(answerOk)
+		w.WriteHeader(http.StatusOK)
+		w.Write(responseBytes)
 	}
 }
 
