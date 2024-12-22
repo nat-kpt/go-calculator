@@ -14,7 +14,7 @@ func Bobr(polish []rune) (float64, error) {
 
 		} else {
 			if len(polskDigits) < 2 {
-				return 0, errors.New("bobr1")
+				return 0, errors.New("Unexpected character, expression is not valid")
 			}
 			var el float64
 			if polish[i] == '+' {
@@ -36,7 +36,7 @@ func Bobr(polish []rune) (float64, error) {
 	if len(polskDigits) == 1 {
 		return polskDigits[0], nil
 	}
-	return 0, errors.New("bobr")
+	return 0, errors.New("Cannot identify numbers, expression is not valid")
 }
 
 func Calc(expression string) (float64, error) {
@@ -56,7 +56,7 @@ func Calc(expression string) (float64, error) {
 		if allInput[i] == ')' {
 			for {
 				if len(operations) == 0 {
-					return 0, errors.New("Some")
+					return 0, errors.New("Extra bracket in expression, expression is not valid")
 				}
 				operations, value = operations[:len(operations)-1], operations[len(operations)-1]
 				if value == '(' {
@@ -75,7 +75,7 @@ func Calc(expression string) (float64, error) {
 		}
 		operations, value = operations[:len(operations)-1], operations[len(operations)-1]
 		if value == '(' {
-			return 0, errors.New("Some")
+			return 0, errors.New("Extra bracket in expression, expression is not valid")
 		}
 		polsk_digits = append(polsk_digits, value)
 	}
